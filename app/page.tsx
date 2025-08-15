@@ -34,7 +34,7 @@ export default function App() {
       case "/preferences":
         return <PreferencesPage />;
       case "/suggestions":
-        return <SuggestionsPage selectedMood={selectedMood || ""} />;
+        return <SuggestionsPage />;
       default:
         return (
           <MoodSelectionPage
