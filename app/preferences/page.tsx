@@ -8,20 +8,7 @@ import { SelectableTag } from "@/app/components/ui/selectable-tag";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 
-interface PreferencesPageProps {
-  onPreferencesUpdate?: (preferences: {
-    genres: string[];
-    services: string[];
-  }) => void;
-  onContinue?: () => void;
-  onBack?: () => void;
-}
-
-const PreferencesPage: React.FC<PreferencesPageProps> = ({
-  onPreferencesUpdate,
-  onContinue,
-  onBack,
-}) => {
+export default function PreferencesPage() {
   const genres = [
     "Action",
     "Adventure",
@@ -84,12 +71,6 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
       services: selectedServices,
     };
     localStorage.setItem("vibeFlixPrefs", JSON.stringify(newPreferences));
-
-    // Call the callback to update parent state
-    if (onPreferencesUpdate) {
-      onPreferencesUpdate(newPreferences);
-    }
-
     toast.success("Preferences saved!");
   };
 
@@ -98,31 +79,25 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
     handleSave();
 
     // Then navigate to suggestions
-    if (onContinue) {
-      onContinue();
-    }
+    window.location.href = "/suggestions";
   };
 
   const handleBack = () => {
-    if (onBack) {
-      onBack();
-    }
+    window.location.href = "/";
   };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
       {/* Back button */}
-      {onBack && (
-        <motion.button
-          onClick={handleBack}
-          className="mb-6 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Mood Selection
-        </motion.button>
-      )}
+      <motion.button
+        onClick={handleBack}
+        className="mb-6 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Mood Selection
+      </motion.button>
 
       <motion.div
         className="text-center mb-10"
@@ -213,6 +188,4 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
       </motion.div>
     </div>
   );
-};
-
-export default PreferencesPage;
+}

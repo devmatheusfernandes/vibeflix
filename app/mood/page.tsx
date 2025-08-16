@@ -61,16 +61,10 @@ const MoodCard = ({
   );
 };
 
-// MoodSelectionPage component
-export default function MoodSelectionPage({
-  selectedMood,
-  setSelectedMood,
-  onContinue,
-}: {
-  selectedMood: string;
-  setSelectedMood: (mood: string) => void;
-  onContinue: () => void;
-}) {
+// MoodSelectionPage component - now compatible with Next.js page requirements
+export default function MoodSelectionPage() {
+  const [selectedMood, setSelectedMood] = useState<string>("");
+
   const moods = [
     { label: "Happy", Icon: Smile },
     { label: "Dramatic", Icon: Drama },
@@ -93,34 +87,38 @@ export default function MoodSelectionPage({
     visible: { y: 0, opacity: 1 },
   };
 
+  const handleContinue = () => {
+    if (selectedMood) {
+      // Navigate to preferences page
+      window.location.href = "/preferences";
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
       <motion.div
         className="text-center"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
       >
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-2">
-          How's your vibe tonight?
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">
+          How are you feeling today?
         </h1>
-        <p className="text-muted-foreground md:text-lg">
-          Select a mood to get personalized movie suggestions.
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          Choose a mood and we'll curate the perfect movie experience just for
+          you
         </p>
       </motion.div>
 
       <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 my-10"
+        className="flex flex-wrap justify-center gap-6 mt-16"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {moods.map((mood) => (
-          <motion.div
-            key={mood.label}
-            variants={itemVariants}
-            className="flex justify-center"
-          >
+          <motion.div key={mood.label} variants={itemVariants}>
             <MoodCard
               Icon={mood.Icon}
               label={mood.label}
@@ -131,17 +129,17 @@ export default function MoodSelectionPage({
         ))}
       </motion.div>
 
-      {/* Continue button - only shows when a mood is selected */}
+      {/* Continue button - only appears when a mood is selected */}
       {selectedMood && (
         <motion.div
-          className="text-center"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-center mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
         >
           <button
-            className="h-12 rounded-lg px-8 inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 w-full max-w-xs"
-            onClick={onContinue}
+            onClick={handleContinue}
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-lg font-semibold shadow-lg hover:shadow-xl"
           >
             Continue to Preferences
           </button>

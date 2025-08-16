@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Smile,
@@ -14,6 +14,7 @@ import {
   Film,
   Tv,
   Heart,
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import MovieCard from "../components/ui/movie-card";
@@ -36,16 +37,28 @@ interface UserPreferences {
   services: string[];
 }
 
-export default function SuggestionsPage({
-  selectedMood,
-  preferences = { genres: [], services: [] },
-}: {
-  selectedMood?: string;
-  preferences?: UserPreferences;
-}) {
+export default function SuggestionsPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [preferences, setPreferences] = useState<UserPreferences>({
+    genres: [],
+    services: [],
+  });
+  const [selectedMood, setSelectedMood] = useState<string>("");
+
+  // Load preferences from localStorage on mount
+  useEffect(() => {
+    const savedPrefs = localStorage.getItem("vibeFlixPrefs");
+    if (savedPrefs) {
+      try {
+        const parsedPrefs = JSON.parse(savedPrefs);
+        setPreferences(parsedPrefs);
+      } catch (error) {
+        console.error("Error parsing preferences:", error);
+      }
+    }
+  }, []);
 
   // Random moods to use when no mood is selected
   const randomMoods = ["Happy", "Dramatic", "Thrilling", "Whimsical", "Spooky"];
@@ -95,7 +108,7 @@ export default function SuggestionsPage({
   // Fetch movies when component mounts or mood changes
   React.useEffect(() => {
     fetchMovies();
-  }, [selectedMood]);
+  }, [selectedMood, preferences]);
 
   const displayMood = selectedMood || "Random";
 
@@ -116,6 +129,17 @@ export default function SuggestionsPage({
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
+      {/* Back button */}
+      <motion.button
+        onClick={() => (window.location.href = "/preferences")}
+        className="mb-6 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Preferences
+      </motion.button>
+
       <motion.div
         className="text-center mb-10"
         initial={{ y: -20, opacity: 0 }}
