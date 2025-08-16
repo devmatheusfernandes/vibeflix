@@ -6,12 +6,14 @@ import { motion } from "framer-motion";
 import { Loader2, Shuffle } from "lucide-react";
 import { MovieCard } from "@/app/_components/ui/movie-card";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "next/navigation";
 
-const SuggestionsPage: React.FC = () => {
-  const searchParams = useSearchParams();
-  const selectedMood = searchParams.get("mood") || "adventurous";
+interface SuggestionsPageProps {
+  selectedMood?: string;
+}
 
+const SuggestionsPage: React.FC<SuggestionsPageProps> = ({
+  selectedMood = "adventurous",
+}) => {
   const mockMovies = [
     {
       id: 1,

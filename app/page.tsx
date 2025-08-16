@@ -173,7 +173,7 @@ export default function App() {
       case "/preferences":
         return <PreferencesPage />;
       case "/suggestions":
-        return <SuggestionsPage />;
+        return <SuggestionsPage selectedMood={selectedMood || ""} />;
       default:
         return (
           <MoodSelectionPage
