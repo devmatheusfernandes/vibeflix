@@ -173,10 +173,6 @@ export default function PreferencesPage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <Button size="lg" className="w-full max-w-xs" onClick={handleSave}>
-          Save Preferences
-        </Button>
-
         <Button
           size="lg"
           className="w-full max-w-xs bg-primary hover:bg-primary/90"

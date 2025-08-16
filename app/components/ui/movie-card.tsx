@@ -1,7 +1,8 @@
 // app/_components/ui/movie-card.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { MovieDetailsModal } from "./movie-details-modal";
+import MovieDetailsModal from "./movie-details-modal";
+import { Movie } from "@/lib/types/types";
 
 interface MovieCardProps {
   id: number;
@@ -23,6 +24,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
   rating,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -30,11 +32,39 @@ const MovieCard: React.FC<MovieCardProps> = ({
   };
 
   const handleViewDetails = () => {
+    // Set the current movie as selected when opening modal
+    setSelectedMovie({
+      id,
+      title,
+      overview,
+      posterUrl,
+      backdropUrl,
+      releaseDate,
+      rating,
+    });
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedMovie(null);
+  };
+
+  const handleSelectNewMovie = (movie: Movie) => {
+    console.log("Selecting new movie:", movie);
+    // Set the new movie as selected and keep modal open
+    setSelectedMovie(movie);
+  };
+
+  // Use selectedMovie if available, otherwise use the current movie props
+  const currentMovie = selectedMovie || {
+    id,
+    title,
+    overview,
+    posterUrl,
+    backdropUrl,
+    releaseDate,
+    rating,
   };
 
   return (
@@ -72,17 +102,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
       </motion.div>
 
       <MovieDetailsModal
-        movie={{
-          id,
-          title,
-          overview,
-          posterUrl,
-          backdropUrl,
-          releaseDate,
-          rating,
-        }}
+        movie={currentMovie}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        onSelectMovie={handleSelectNewMovie}
       />
     </>
   );
