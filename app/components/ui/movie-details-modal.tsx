@@ -152,14 +152,12 @@ function MovieDetailsModal({
   // NEW: Fetch cast and similar movies when modal opens
   useEffect(() => {
     if (isOpen && movie.id) {
-      console.log("Fetching details for movie:", movie.title, movie.id);
       const getDetails = async () => {
         setIsLoadingDetails(true);
         setCast([]);
         setSimilarMovies([]);
         try {
           const details = await fetchMovieDetails(movie.id);
-          console.log("Fetched details:", details);
           setCast(details.cast || []);
           setSimilarMovies(details.similar || []);
         } catch (error) {
@@ -390,8 +388,6 @@ function MovieDetailsModal({
                     <button
                       key={similarMovie.id}
                       onClick={() => {
-                        console.log("Similar movie clicked:", similarMovie);
-                        console.log("onSelectMovie function:", onSelectMovie);
                         if (onSelectMovie) {
                           onSelectMovie(similarMovie);
                         }

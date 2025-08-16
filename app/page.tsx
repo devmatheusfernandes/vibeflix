@@ -2,9 +2,8 @@
 import { useState } from "react";
 import { BottomNav } from "./components/layout/bottom-nav";
 import { Header } from "./components/layout/header";
-import PreferencesPage from "./preferences/page";
-import SuggestionsPage from "./suggestions/page";
-import MoodSelectionPage from "./mood/page";
+import DiscoverPage from "./discover/page";
+import RandomPage from "./random/page";
 import WatchlistPage from "./watchlist/page";
 
 export default function App() {
@@ -17,15 +16,13 @@ export default function App() {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case "/":
-        return <MoodSelectionPage />;
-      case "/preferences":
-        return <PreferencesPage />;
-      case "/suggestions":
-        return <SuggestionsPage />;
+        return <DiscoverPage />;
+      case "/random":
+        return <RandomPage />;
       case "/watchlist":
         return <WatchlistPage />;
       default:
-        return <MoodSelectionPage />;
+        return <DiscoverPage />;
     }
   };
 

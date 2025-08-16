@@ -51,7 +51,6 @@ const MovieCard: React.FC<MovieCardProps> = ({
   };
 
   const handleSelectNewMovie = (movie: Movie) => {
-    console.log("Selecting new movie:", movie);
     // Set the new movie as selected and keep modal open
     setSelectedMovie(movie);
   };
