@@ -2,6 +2,7 @@
 import React from "react";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/app/_components/theme-toggle";
 
 const Header: React.FC = () => (
   <header
@@ -13,11 +14,14 @@ const Header: React.FC = () => (
     )}
   >
     <div className="container mx-auto px-4 md:px-6">
-      <div className="flex items-center gap-2">
-        <Sparkles className="w-6 h-6 text-primary" />
-        <h1 className="text-xl font-bold text-foreground tracking-tighter">
-          VibeFlix
-        </h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-6 h-6 text-primary" />
+          <h1 className="text-xl font-bold text-foreground tracking-tighter">
+            VibeFlix
+          </h1>
+        </div>
+        <ThemeToggle />
       </div>
     </div>
   </header>

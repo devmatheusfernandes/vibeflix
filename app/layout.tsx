@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "./_components/theme-provider";
 
 export const metadata: Metadata = {
   title: "VibeFlix - Movie Recommendations by Mood",
@@ -14,15 +15,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: { background: "var(--card)", color: "var(--foreground)" },
-          }}
-        />
-        {children}
+        <ThemeProvider defaultTheme="system" storageKey="vibeflix-theme">
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: { background: "var(--card)", color: "var(--foreground)" },
+            }}
+          />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

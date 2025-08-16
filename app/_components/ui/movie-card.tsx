@@ -1,14 +1,6 @@
 // app/_components/ui/movie-card.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 interface MovieCardProps {
   title: string;
@@ -28,8 +20,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
   return (
     <motion.div variants={cardVariants}>
-      <Card className="w-full max-w-sm overflow-hidden rounded-xl border-2 border-border/50 bg-card/60 backdrop-blur-sm transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10">
-        <CardHeader className="p-0">
+      <div className="w-full max-w-sm overflow-hidden rounded-xl border-2 border-border/50 bg-card/60 backdrop-blur-sm transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10">
+        <div className="p-0">
           <div className="aspect-[2/3] w-full">
             <img
               src={posterUrl}
@@ -41,19 +33,21 @@ const MovieCard: React.FC<MovieCardProps> = ({
               }}
             />
           </div>
-        </CardHeader>
-        <CardContent className="p-4">
-          <CardTitle className="mb-2 line-clamp-1 text-lg">{title}</CardTitle>
+        </div>
+        <div className="p-4">
+          <h3 className="mb-2 line-clamp-1 text-lg font-semibold">{title}</h3>
           <p className="text-muted-foreground line-clamp-3 text-sm">
             {overview}
           </p>
-        </CardContent>
-        <CardFooter className="p-4 pt-0">
-          <Button className="w-full">View Details</Button>
-        </CardFooter>
-      </Card>
+        </div>
+        <div className="p-4 pt-0">
+          <button className="w-full h-10 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
+            View Details
+          </button>
+        </div>
+      </div>
     </motion.div>
   );
 };
 
-export { MovieCard };
+export default MovieCard;
