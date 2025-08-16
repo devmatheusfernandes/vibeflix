@@ -3,12 +3,25 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Film, Tv } from "lucide-react";
-import { SelectableTag } from "@/app/_components/ui/selectable-tag";
-import { Button } from "@/components/ui/button";
+import { Film, Tv, ArrowRight, ArrowLeft } from "lucide-react";
+import { SelectableTag } from "@/app/components/ui/selectable-tag";
 import { toast } from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
-const PreferencesPage: React.FC = () => {
+interface PreferencesPageProps {
+  onPreferencesUpdate?: (preferences: {
+    genres: string[];
+    services: string[];
+  }) => void;
+  onContinue?: () => void;
+  onBack?: () => void;
+}
+
+const PreferencesPage: React.FC<PreferencesPageProps> = ({
+  onPreferencesUpdate,
+  onContinue,
+  onBack,
+}) => {
   const genres = [
     "Action",
     "Adventure",
@@ -45,9 +58,13 @@ const PreferencesPage: React.FC = () => {
   useEffect(() => {
     const savedPrefs = localStorage.getItem("vibeFlixPrefs");
     if (savedPrefs) {
-      const { genres, services } = JSON.parse(savedPrefs);
-      setSelectedGenres(genres || []);
-      setSelectedServices(services || []);
+      try {
+        const { genres, services } = JSON.parse(savedPrefs);
+        setSelectedGenres(genres || []);
+        setSelectedServices(services || []);
+      } catch (error) {
+        console.error("Error parsing preferences:", error);
+      }
     }
   }, []);
 
@@ -62,15 +79,51 @@ const PreferencesPage: React.FC = () => {
   };
 
   const handleSave = () => {
-    localStorage.setItem(
-      "vibeFlixPrefs",
-      JSON.stringify({ genres: selectedGenres, services: selectedServices })
-    );
+    const newPreferences = {
+      genres: selectedGenres,
+      services: selectedServices,
+    };
+    localStorage.setItem("vibeFlixPrefs", JSON.stringify(newPreferences));
+
+    // Call the callback to update parent state
+    if (onPreferencesUpdate) {
+      onPreferencesUpdate(newPreferences);
+    }
+
     toast.success("Preferences saved!");
+  };
+
+  const handleContinue = () => {
+    // Save preferences first
+    handleSave();
+
+    // Then navigate to suggestions
+    if (onContinue) {
+      onContinue();
+    }
+  };
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    }
   };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
+      {/* Back button */}
+      {onBack && (
+        <motion.button
+          onClick={handleBack}
+          className="mb-6 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Mood Selection
+        </motion.button>
+      )}
+
       <motion.div
         className="text-center mb-10"
         initial={{ y: -20, opacity: 0 }}
@@ -80,7 +133,8 @@ const PreferencesPage: React.FC = () => {
           Customize Your Experience
         </h1>
         <p className="text-muted-foreground md:text-lg">
-          Tell us what you like and where you watch.
+          Tell us what you like and where you watch. You can skip any section if
+          you prefer.
         </p>
       </motion.div>
 
@@ -139,13 +193,22 @@ const PreferencesPage: React.FC = () => {
       </section>
 
       <motion.div
-        className="text-center"
+        className="text-center space-y-4"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
         <Button size="lg" className="w-full max-w-xs" onClick={handleSave}>
           Save Preferences
+        </Button>
+
+        <Button
+          size="lg"
+          className="w-full max-w-xs bg-primary hover:bg-primary/90"
+          onClick={handleContinue}
+        >
+          Continue to Suggestions
+          <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </motion.div>
     </div>

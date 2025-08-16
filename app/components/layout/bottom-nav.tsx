@@ -1,8 +1,8 @@
 // app/_components/layout/bottom-nav.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { Home, SlidersHorizontal, Film } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Home, SlidersHorizontal, Film, Bookmark } from "lucide-react";
+import { cn } from "@/lib/utils/utils";
 
 interface BottomNavProps {
   activePath: string;
@@ -14,6 +14,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activePath, onNavigate }) => {
     { href: "/", label: "Vibe", Icon: Home },
     { href: "/preferences", label: "Preferences", Icon: SlidersHorizontal },
     { href: "/suggestions", label: "Suggestions", Icon: Film },
+    { href: "/watchlist", label: "Watchlist", Icon: Bookmark },
   ];
 
   const navItemVariants = {
@@ -25,7 +26,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activePath, onNavigate }) => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 h-16 bg-card/80 backdrop-blur-lg border-t border-border z-50 md:top-0 md:w-20 md:h-screen md:border-r md:border-t-0">
-      <div className="grid h-full grid-cols-3 max-w-lg mx-auto md:flex md:flex-col md:justify-center md:h-full md:gap-4 md:max-w-none md:px-2">
+      <div className="grid h-full grid-cols-4 max-w-lg mx-auto md:flex md:flex-col md:justify-center md:h-full md:gap-4 md:max-w-none md:px-2">
         {navItems.map(({ href, label, Icon }) => {
           const isActive = activePath === href;
           return (

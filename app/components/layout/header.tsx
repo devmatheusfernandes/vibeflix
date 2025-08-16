@@ -1,8 +1,8 @@
 // app/_components/layout/header.tsx
 import React from "react";
 import { Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/app/_components/theme-toggle";
+import { cn } from "@/lib/utils/utils";
+import { ThemeToggle } from "../ui/theme-toggle";
 
 const Header: React.FC = () => (
   <header
