@@ -17,6 +17,9 @@ import {
 import { toast } from "react-hot-toast";
 import { fetchMoviesByVibe } from "@/lib/hooks/actions";
 
+// NEW: Import the MovieDetailsModal component
+import MovieDetailsModal from "../components/ui/movie-details-modal"; // Adjust the import path if necessary
+
 interface Movie {
   id: number;
   title: string;
@@ -43,6 +46,10 @@ export default function DiscoverPage() {
   });
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // NEW: State for managing the movie details modal
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load preferences from localStorage on mount
   useEffect(() => {
@@ -120,8 +127,6 @@ export default function DiscoverPage() {
         : [...preferences.genres, genre],
     };
     setPreferences(newPreferences);
-
-    // Save to localStorage
     localStorage.setItem("vibeFlixPrefs", JSON.stringify(newPreferences));
   };
 
@@ -133,8 +138,6 @@ export default function DiscoverPage() {
         : [...preferences.services, service],
     };
     setPreferences(newPreferences);
-
-    // Save to localStorage
     localStorage.setItem("vibeFlixPrefs", JSON.stringify(newPreferences));
   };
 
@@ -168,9 +171,20 @@ export default function DiscoverPage() {
     setMovies([]);
   };
 
+  // NEW: Handlers for opening and closing the modal
+  const handleViewDetails = (movie: Movie) => {
+    setSelectedMovie(movie);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedMovie(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4">
-      <div className="max-w-2xl mx-auto pt-8">
+      <div className="max-w-4xl mx-auto pt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -236,7 +250,7 @@ export default function DiscoverPage() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
                   {moods.map((mood) => (
                     <motion.button
                       key={mood.label}
@@ -292,7 +306,7 @@ export default function DiscoverPage() {
                       <Film className="w-5 h-5" />
                       Favorite Genres
                     </h3>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {genres.map((genre) => (
                         <motion.button
                           key={genre}
@@ -317,7 +331,7 @@ export default function DiscoverPage() {
                       <Tv className="w-5 h-5" />
                       Streaming Services
                     </h3>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {services.map((service) => (
                         <motion.button
                           key={service}
@@ -387,13 +401,54 @@ export default function DiscoverPage() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-8 max-h-96 overflow-y-auto">
+                <div className="flex flex-col items-center gap-3 my-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-foreground">Vibe:</span>
+                    <span className="bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">
+                      {selectedMood}
+                    </span>
+                  </div>
+
+                  {preferences.genres.length > 0 && (
+                    <div className="flex flex-wrap justify-center items-center gap-2 max-w-lg">
+                      <span className="font-semibold text-foreground self-start">
+                        Genres:
+                      </span>
+                      {preferences.genres.map((genre) => (
+                        <span
+                          key={genre}
+                          className="bg-muted px-2 py-1 rounded-md text-muted-foreground text-xs"
+                        >
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {preferences.services.length > 0 && (
+                    <div className="flex flex-wrap justify-center items-center gap-2 max-w-lg">
+                      <span className="font-semibold text-foreground self-start">
+                        Services:
+                      </span>
+                      {preferences.services.map((service) => (
+                        <span
+                          key={service}
+                          className="bg-muted px-2 py-1 rounded-md text-muted-foreground text-xs"
+                        >
+                          {service}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
                   {movies.map((movie) => (
                     <motion.div
                       key={movie.id}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="bg-card/50 rounded-lg overflow-hidden border border-border/30"
+                      className="bg-card/50 rounded-lg overflow-hidden border border-border/30 flex flex-col group"
                     >
                       <div className="aspect-[2/3] relative">
                         <img
@@ -401,18 +456,25 @@ export default function DiscoverPage() {
                           alt={movie.title}
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                         <div className="absolute bottom-2 left-2 right-2">
-                          <h3 className="text-sm font-semibold text-white line-clamp-2">
+                          <h3 className="text-sm font-semibold text-white line-clamp-1">
                             {movie.title}
                           </h3>
-                          <div className="flex items-center gap-1 mt-1">
-                            <div className="flex items-center gap-1 text-xs text-yellow-400">
-                              <span>★</span>
-                              <span>{movie.rating.toFixed(1)}</span>
-                            </div>
+                          <div className="flex items-center gap-1 mt-1 text-xs text-yellow-400">
+                            <span>★</span>
+                            <span>{movie.rating.toFixed(1)}</span>
                           </div>
                         </div>
+                      </div>
+                      {/* NEW: View Details Button */}
+                      <div className="p-2 mt-auto">
+                        <button
+                          onClick={() => handleViewDetails(movie)}
+                          className="w-full bg-primary/80 text-primary-foreground text-xs font-semibold py-2 rounded-md hover:bg-primary transition-colors"
+                        >
+                          View Details
+                        </button>
                       </div>
                     </motion.div>
                   ))}
@@ -442,6 +504,16 @@ export default function DiscoverPage() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* NEW: Render the MovieDetailsModal */}
+      {isModalOpen && selectedMovie && (
+        <MovieDetailsModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          movie={selectedMovie}
+          onSelectMovie={(newMovie) => setSelectedMovie(newMovie)}
+        />
+      )}
     </div>
   );
 }
